@@ -82,6 +82,20 @@ impl Sequence {
 
 }
 
+struct ClusterOfSequence {
+    sub_clusters: Vec<ClusterOfSequence>,
+    elements: Vec<Sequence>,
+}
+
+impl ClusterOfSequence {
+    pub fn new(elements_in: Sequence) -> ClusterOfSequence{
+        ClusterOfSequence {
+            sub_clusters: Vec::new(),
+            elements: vec![elements_in],
+        }
+    }
+}
+
 mod subclass{
 
 }
