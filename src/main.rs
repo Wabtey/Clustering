@@ -1,6 +1,8 @@
 mod sequence;
+mod utils;
 
 use sequence::*;
+// use utils::*;
 
 fn main() {
     let seq_1 = Sequence::new_with_string("seq_1".to_string(), "ATTACG".to_string());
@@ -34,8 +36,9 @@ fn main() {
     bio_cluster.clusterize_agglomerative();
     println!("bio_cluster: \n{}", bio_cluster.get_newick());
 
-    // bio_cluster.clusterize();
-    // println!("bio_cluster {}", bio_cluster.get_newick());
+    let mut hemo_cluster = utils::_analyze_from_ressource_folder("");
+    println!("bio_cluster: \n{}", hemo_cluster.get_newick());
+    // let seq_0_hemo = Sequence::new_with_string()
 } 
 
 /*
