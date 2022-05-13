@@ -1,7 +1,8 @@
-use std::{io::prelude::*, str::*, vec::*};
+use std::{vec::*, time::SystemTime,};
 
 #[derive(Clone)]
 pub struct Sequence {
+    name: String,
     seq: String,
 }
 
@@ -9,20 +10,27 @@ pub struct Sequence {
 impl Sequence {
     pub fn new() -> Sequence{
         Sequence {
+            name: String::new(),
             seq: String::new(),
         }
     }
 
-    pub fn new_with_string(s: String) -> Sequence { 
+    pub fn new_with_string(name: String, seq: String) -> Sequence { 
         Sequence {
-            seq: s,
+            name,
+            seq,
         }
     }
 
-    pub fn new_with_sequence(s: Sequence) -> Sequence { 
+    pub fn new_with_sequence(name: String, s: Sequence) -> Sequence { 
         Sequence {
+            name,
             seq: s.seq,
         }
+    }
+
+    pub fn get_name(&self) -> String {
+        self.clone().name
     }
 
     /**
@@ -82,6 +90,12 @@ impl Sequence {
 
 }
 
+/**
+ * we're able to create a pure copy of a cluster with a new ref by the Clone derive
+ * 
+ * sub_clusters correspond to all the clusters contained in this clusters
+ * elements contains all element in this cluster, eventually from the sub_clusters
+ */
 #[derive(Clone)]
 pub struct ClusterOfSequence {
     sub_clusters: Vec<ClusterOfSequence>,
@@ -98,22 +112,25 @@ impl ClusterOfSequence
         }
     }
 
-    pub fn new_with_sequences(elements_in:Vec<Sequence>) -> ClusterOfSequence
+    pub fn new_with_sequences(elements:Vec<Sequence>) -> ClusterOfSequence
     {
         ClusterOfSequence {
             sub_clusters: {
                 let mut res = Vec::new();
-                for e in &elements_in {
+                for e in &elements {
                     res.push(ClusterOfSequence::new(e.clone()))
                 }
                 res
             },
-            elements: elements_in,
+            elements,
         }
     }
 
-    pub fn new_with_clusters(clusters_1: &ClusterOfSequence,
-                        clusters_2: &ClusterOfSequence) -> ClusterOfSequence
+    /**
+     * ClusterOfSequence without reference &?
+     */
+    pub fn new_with_clusters(clusters_1: ClusterOfSequence,
+                        clusters_2: ClusterOfSequence) -> ClusterOfSequence
     {
         ClusterOfSequence {
             sub_clusters: vec![clusters_1.clone(), clusters_2.clone()],
@@ -126,6 +143,7 @@ impl ClusterOfSequence
             }
         }
     }
+
 
     pub fn linkage(&self, a_cluster: ClusterOfSequence) -> Option<f32>
     {
@@ -153,24 +171,77 @@ impl ClusterOfSequence
             Some(result)
         }
     }
-    pub fn get_newick(&self) -> String 
+    pub fn get_newick_old(&self) -> String 
     {
         let mut res = String::from("(");
         if self.sub_clusters.len() != 0 {
-            for sub in &self.sub_clusters {
-                res.push_str(sub.get_newick().as_str());
-                res.push(',');
+            for i in 0..self.sub_clusters.len() {
+                res.push_str(&self.sub_clusters[i].get_newick().as_str());
+
+                // e != self.elements.last().unwrap()
+                if i != self.sub_clusters.len()-1 {
+                    res.push(',');
+                }
+                
             }
         }else {
-            for e in &self.elements {
-                res.push_str(e.seq.as_str());
-                res.push(',');
+            for e in 0..self.elements.len() {
+                res.push_str(&self.elements[e].name.as_str());
+
+                if e != self.elements.len()-1 {
+                    res.push(',');
+                }
+                
             }
         }
         res.push(')');
         res
     }
 
+    /**
+     * TODO recheck step 6 and 7
+     */
+    pub fn get_newick(&self) -> String
+    {
+        self.get_newick_with_space(0)
+    }
+
+    fn get_newick_with_space(&self, space: i32) -> String
+    {
+        let mut res = String::new();
+        if self.sub_clusters.len() != 0 {
+            for i in 0..self.sub_clusters.len() {    
+                // res.push_str("|");     
+                res.push_str(
+                    &self.sub_clusters[i].get_newick_with_space(space+1)
+                                         .as_str());
+
+                // e != self.elements.last().unwrap()
+                if i != self.sub_clusters.len()-1 {
+                    res.push_str("\n");
+                }else {
+                    res.push_str("\n");
+                }
+                
+            }
+        }else {
+            for e in 0..self.elements.len() {
+                if e ==0 || e == &self.elements.len() -1{
+                    for count in 0..space {
+                        res.push_str("-");
+                    }
+                }
+                res.push_str(&self.elements[e].seq.as_str());
+
+                if e != self.elements.len()-1 {
+                    res.push_str("\n");
+                }
+                
+            }
+        }
+        // res.push_str("\n");
+        res
+    }
     /**
      * first approch :
      *  compare each sequence
@@ -201,34 +272,68 @@ impl ClusterOfSequence
      */
     pub fn clusterize_agglomerative(&mut self) 
     {
-        while self.sub_clusters.len() > 2 {
-            'main_loop:
-            for i in 0..self.sub_clusters.len() {
-                let mut min: f32 = f32::MAX;
-                let mut keep = 0;
-                for j in 0.. self.sub_clusters.len() {
-                    if i != j {
-                        let dist = self.sub_clusters[i]
-                                       .linkage(self.sub_clusters[j].clone())
-                                       .unwrap();
-                        if dist < min {
-                            min = dist;
-                            keep = j;
-                        }
+        // start timer
+        let st = SystemTime::now();
+
+        let mut i = 0;
+        'main_loop:
+        while i < self.sub_clusters.len() && self.sub_clusters.len() > 2 {
+
+            let mut min: f32 = f32::MAX;
+            let mut keep = 0;
+            // state 2
+            for j in 0.. self.sub_clusters.len() {
+                if i != j {
+                    // state 2.1
+                    let dist = self.sub_clusters[i]
+                                   .linkage(self.sub_clusters[j].clone())
+                                   .unwrap();
+                    if dist < min {
+                        min = dist;
+                        keep = j;
                     }
                 }
-                for j in 0..self.sub_clusters.len() {
-                    if j != keep && j != i {
-                        if self.sub_clusters[keep]
-                               .linkage(self.sub_clusters[j].clone())
-                               .unwrap() < min {
-                            continue 'main_loop;
-                        }
-                    }
-                }
-                // ALED my bad
+
+                // we tried here to verify at the same time the cluster's coherence
+                // but we need to keep track of a smallest distance BEFORE checking
+                // the coherence (in the case if the closest is after j)
+
             }
+            // state 2.2
+            for j in 0..self.sub_clusters.len() {
+                if j != keep && j != i {
+                    if self.sub_clusters[keep]
+                           .linkage(self.sub_clusters[j].clone())
+                           .unwrap() < min {
+                        i+=1;
+                        continue 'main_loop;
+                        // the while exit is ONLY here
+                    }
+                }
+            }
+
+            // create a new subCluster which contains two coherent element 
+            let sub_1 = self.sub_clusters[i].clone();
+            let sub_2 = self.sub_clusters[keep].clone();
+            
+            // remove the two clusters from the first cluster
+            &self.sub_clusters.remove(i);
+            if keep > i {
+                &self.sub_clusters.remove(keep-1);
+            }else {
+                &self.sub_clusters.remove(keep);
+            }
+
+            // add the new cluster which contains the two last clusters
+            &self.sub_clusters.insert(
+                0, ClusterOfSequence::new_with_clusters(sub_1, sub_2));
+            
+            i = 0;
         }
+
+        // check timer
+        let ed = SystemTime::now();
+        println!("{:#?}", ed.duration_since(st).unwrap());
     }
 
     /**
@@ -241,7 +346,7 @@ impl ClusterOfSequence
     }
 }
 
-mod subclass{
+mod SequenceLabeled{
 
 }
 
