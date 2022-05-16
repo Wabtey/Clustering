@@ -50,12 +50,13 @@ pub fn _analyze_from_ressource_folder(path: &str) -> ClusterOfSequence{
 
     for path in paths {
 
-        let mut name = path.unwrap()
-                       .path()
-                       .display()
-                       .to_string();
+        let mut name = path.as_ref()
+                           .unwrap()
+                           .path()
+                           .display()
+                           .to_string();
         
-        name = name.replace("./data_reformed/", "");
+        name = name.replace("./data_reformed\\", "");
 
         let name_chars: Vec<char> = name.chars().collect();
         let mut index_to_start_removing =0;
@@ -66,7 +67,7 @@ pub fn _analyze_from_ressource_folder(path: &str) -> ClusterOfSequence{
                 break
             }
         }
-        let name_reformed = &name[index_to_start_removing..name.len()];
+        let name_reformed = &name[0..index_to_start_removing];
         println!("name of the sequence: {}", name_reformed);
         
 
