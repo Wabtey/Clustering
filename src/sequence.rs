@@ -179,7 +179,7 @@ impl ClusterOfSequence
         let mut res = String::from("(");
         if self.sub_clusters.len() != 0 {
             for i in 0..self.sub_clusters.len() {
-                res.push_str(&self.sub_clusters[i].get_newick().as_str());
+                res.push_str(&self.sub_clusters[i].get_newick_old().as_str());
 
                 // e != self.elements.last().unwrap()
                 if i != self.sub_clusters.len()-1 {
