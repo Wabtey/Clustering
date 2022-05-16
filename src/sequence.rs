@@ -346,7 +346,7 @@ impl ClusterOfSequence
     }
 }
 
-mod SequenceLabeled{
+mod sequence_labeled{
 
 }
 
