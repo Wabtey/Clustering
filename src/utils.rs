@@ -54,8 +54,13 @@ pub fn analyze_from_ressource_folder() -> ClusterOfSequence{
                            .display()
                            .to_string();
         
-        name = name.replace("./data_reformed\\", "");
+        name = name.replace("./data_reformed\\", "")
+                   .replace("_sequence.fa", "")
+                   .replace("_", " ");
 
+        /*
+         * old method :
+         * 
         let name_chars: Vec<char> = name.chars().collect();
         let mut index_to_start_removing =0;
         for i in 0..name_chars.len(){
@@ -66,13 +71,15 @@ pub fn analyze_from_ressource_folder() -> ClusterOfSequence{
             }
         }
         let name_reformed = &name[0..index_to_start_removing];
-        println!("name of the sequence: {}", name_reformed);
-        
-
+         *
+         */
+    
         sequences.push(Sequence::new_with_string(
-                        name_reformed.to_string(),
+                        name.to_string(),
                         read_fasta(&path.unwrap().path().display().to_string()))
                       );
+        println!("name of the sequence: {}", name);
+
     }
 
     let bio_cluster = ClusterOfSequence::new_with_sequences(sequences);
