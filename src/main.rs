@@ -44,9 +44,9 @@ fn main() {
     // --Third Tests about the automatisation of the fasta reading--
 
     let mut hemo_cluster = utils::analyze_from_ressource_folder();
-    println!("bio_cluster: \n{}", hemo_cluster.get_newick());
+    println!("bio_cluster: \n{}", hemo_cluster.get_newick_old());
     hemo_cluster.clusterize_agglomerative();
-    println!("bio_cluster clusterized: \n{}", hemo_cluster.get_newick());
+    println!("bio_cluster clusterized: \n{}", hemo_cluster.get_newick_old());
     // let seq_0_hemo = Sequence::new_with_string()
 } 
 
