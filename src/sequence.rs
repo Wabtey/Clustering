@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use std::{vec::*, time::SystemTime,};
 
 #[derive(Clone)]
@@ -8,6 +10,7 @@ pub struct Sequence {
 
 
 impl Sequence {
+    
     pub fn new() -> Sequence{
         Sequence {
             name: String::new(),
@@ -144,7 +147,6 @@ impl ClusterOfSequence
         }
     }
 
-
     pub fn linkage(&self, a_cluster: ClusterOfSequence) -> Option<f32>
     {
         // covert the division by 0
@@ -171,6 +173,7 @@ impl ClusterOfSequence
             Some(result)
         }
     }
+
     pub fn get_newick_old(&self) -> String 
     {
         let mut res = String::from("(");
@@ -200,6 +203,10 @@ impl ClusterOfSequence
 
     /**
      * TODO recheck step 6 and 7
+     * if you want to get a cleaner look change :
+     *      .elements[e].seq to .elements[e].name
+     * if you want to get the precise sequence in the representation :
+     *      .elements[e].name to .elements[e].seq
      */
     pub fn get_newick(&self) -> String
     {
@@ -227,11 +234,12 @@ impl ClusterOfSequence
         }else {
             for e in 0..self.elements.len() {
                 if e ==0 || e == &self.elements.len() -1{
-                    for count in 0..space {
+                    for _count in 0..space {
                         res.push_str("-");
                     }
                 }
-                res.push_str(&self.elements[e].seq.as_str());
+                // .elements[e].seq or .elements[e].name depending
+                res.push_str(&self.elements[e].name.as_str());
 
                 if e != self.elements.len()-1 {
                     res.push_str("\n");
@@ -315,17 +323,19 @@ impl ClusterOfSequence
             // create a new subCluster which contains two coherent element 
             let sub_1 = self.sub_clusters[i].clone();
             let sub_2 = self.sub_clusters[keep].clone();
+
+            // commit: from here I remove all the ref & to self call
             
             // remove the two clusters from the first cluster
-            &self.sub_clusters.remove(i);
+            self.sub_clusters.remove(i);
             if keep > i {
-                &self.sub_clusters.remove(keep-1);
+                self.sub_clusters.remove(keep-1);
             }else {
-                &self.sub_clusters.remove(keep);
+                self.sub_clusters.remove(keep);
             }
 
             // add the new cluster which contains the two last clusters
-            &self.sub_clusters.insert(
+            self.sub_clusters.insert(
                 0, ClusterOfSequence::new_with_clusters(sub_1, sub_2));
             
             i = 0;
@@ -341,7 +351,7 @@ impl ClusterOfSequence
      * @param himself
      * @param n, the number of sub division needed
      */
-    pub fn clusterize_divisive(&self, n: i32) {
+    pub fn clusterize_divisive(&self, _n: i32) {
 
     }
 }

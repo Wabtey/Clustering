@@ -12,7 +12,7 @@ fn main() {
     let seq_2 = Sequence::new_with_string("seq_2".to_string(), "ATATCG".to_string());
     let seq_3 = Sequence::new_with_string("seq_3".to_string(), "ACCCCG".to_string());
     let seq_4 = Sequence::new_with_string("seq_4".to_string(), "GGGGAA".to_string());
-    let seq_5 = Sequence::new_with_string("seq_5".to_string(), "TTTACG".to_string());
+    let _seq_5 = Sequence::new_with_string("seq_5".to_string(), "TTTACG".to_string());
     let seq_6 = Sequence::new_with_string("seq_6".to_string(), "ATTAC".to_string());
     let seq_7 = Sequence::new_with_string("seq_7".to_string(), "ATATC".to_string());
 
@@ -29,7 +29,7 @@ fn main() {
 
     // --Second Tests about Clusterize--
 
-    let sequences = vec![seq_1, seq_2, seq_3, seq_4, seq_5];
+    // let sequences = vec![seq_1, seq_2, seq_3, seq_4, seq_5];
     let seq_0_test = Sequence::new_with_string("seq_0_test".to_string(), "ATTACG".to_string());
     let seq_1_test = Sequence::new_with_string("seq_1_test".to_string(), "ATATCG".to_string());
     let seq_2_test = Sequence::new_with_string("seq_2_test".to_string(), "GCCGAG".to_string());
@@ -46,7 +46,7 @@ fn main() {
     let mut hemo_cluster = utils::analyze_from_ressource_folder();
     println!("bio_cluster: \n{}", hemo_cluster.get_newick());
     hemo_cluster.clusterize_agglomerative();
-    println!("bio_cluster: \n{}", hemo_cluster.get_newick());
+    println!("bio_cluster clusterized: \n{}", hemo_cluster.get_newick());
     // let seq_0_hemo = Sequence::new_with_string()
 } 
 
