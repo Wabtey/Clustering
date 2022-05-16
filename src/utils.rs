@@ -10,7 +10,7 @@ fn read_fasta(path: &str) -> String {
     let mut res:String = String::new();
     //print!("{:?}", content);
     for line in content.split("\n") {
-        if !line.starts_with(">") || !line.starts_with(" ") {
+        if !line.starts_with(">") {
             res.push_str(&line.replace("\r", ""));
         }    
     }
@@ -29,7 +29,7 @@ pub fn analyze_from_ressource_folder() -> ClusterOfSequence{
     let paths = fs::read_dir("./data_reformed").unwrap();
 
     /*
-     * Display all fils contained in the current path
+     * Display all files contained in the current path
     println!("Please input your choice :");
 
     let mut counter = 0;
