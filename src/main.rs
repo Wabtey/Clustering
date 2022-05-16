@@ -5,6 +5,9 @@ use sequence::*;
 // use utils::*;
 
 fn main() {
+
+    // --First Tests about the levenshtein distance--
+
     let seq_1 = Sequence::new_with_string("seq_1".to_string(), "ATTACG".to_string());
     let seq_2 = Sequence::new_with_string("seq_2".to_string(), "ATATCG".to_string());
     let seq_3 = Sequence::new_with_string("seq_3".to_string(), "ACCCCG".to_string());
@@ -24,6 +27,8 @@ fn main() {
     
     // println!("name of ATTACG: {}", seq_1.get_name());
 
+    // --Second Tests about Clusterize--
+
     let sequences = vec![seq_1, seq_2, seq_3, seq_4, seq_5];
     let seq_0_test = Sequence::new_with_string("seq_0_test".to_string(), "ATTACG".to_string());
     let seq_1_test = Sequence::new_with_string("seq_1_test".to_string(), "ATATCG".to_string());
@@ -36,7 +41,11 @@ fn main() {
     bio_cluster.clusterize_agglomerative();
     println!("bio_cluster: \n{}", bio_cluster.get_newick());
 
-    let mut hemo_cluster = utils::_analyze_from_ressource_folder("");
+    // --Third Tests about the automatisation of the fasta reading--
+
+    let mut hemo_cluster = utils::analyze_from_ressource_folder();
+    println!("bio_cluster: \n{}", hemo_cluster.get_newick());
+    hemo_cluster.clusterize_agglomerative();
     println!("bio_cluster: \n{}", hemo_cluster.get_newick());
     // let seq_0_hemo = Sequence::new_with_string()
 } 

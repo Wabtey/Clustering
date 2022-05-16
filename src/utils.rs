@@ -25,26 +25,24 @@ fn read_fasta(path: &str) -> String {
  * fasta files in the path (in param).
  * @param a specific folder name in the res folder
  */
-pub fn _analyze_from_ressource_folder(path: &str) -> ClusterOfSequence{
+pub fn analyze_from_ressource_folder() -> ClusterOfSequence{
     let paths = fs::read_dir("./data_reformed").unwrap();
 
-    // println!("Please input your choice :");
+    /*
+     * Display all fils contained in the current path
+    println!("Please input your choice :");
 
-    // let mut counter = 0;
-    // for path in paths {
-    //     println!("{}. {}",counter, path.unwrap().path().display());
-    //     counter+=1
-    // }
+    let mut counter = 0;
+    for path in paths {
+        println!("{}. {}",counter, path.unwrap().path().display());
+        counter+=1
+    }
 
-    // let mut choice = String::new();
-    // io::stdin()
-    //     .read_line(&mut choice)
-    //     .expect("Failed to read line");
-
-    let path_choose = "res/"
-                .to_string()
-                .push_str(path);
-
+    let mut choice = String::new();
+    io::stdin()
+        .read_line(&mut choice)
+        .expect("Failed to read line");
+    */
 
     let mut sequences: Vec<Sequence> = Vec::new();
 
