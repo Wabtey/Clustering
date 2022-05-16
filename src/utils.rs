@@ -57,22 +57,6 @@ pub fn analyze_from_ressource_folder() -> ClusterOfSequence{
         name = name.replace("./data_reformed\\", "")
                    .replace("_sequence.fa", "")
                    .replace("_", " ");
-
-        /*
-         * old method :
-         * 
-        let name_chars: Vec<char> = name.chars().collect();
-        let mut index_to_start_removing =0;
-        for i in 0..name_chars.len(){
-            if name_chars[i] == '_' &&
-              (name_chars[i+1] == 'h' || name_chars[i+1] == 'H') {
-                index_to_start_removing = i;
-                break
-            }
-        }
-        let name_reformed = &name[0..index_to_start_removing];
-         *
-         */
     
         sequences.push(Sequence::new_with_string(
                         name.to_string(),
