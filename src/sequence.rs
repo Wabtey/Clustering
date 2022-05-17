@@ -111,11 +111,7 @@ impl ClusterOfSequence
     pub fn new(element: Sequence) -> ClusterOfSequence
     {
         ClusterOfSequence {
-            name:
-            match element.name.chars().next() {
-                Some(s) => s.to_string(),
-                None => "".to_string(),
-            },
+            name: element.clone().name,
             sub_clusters: Vec::new(),
             elements: vec![element],
         }
@@ -127,13 +123,15 @@ impl ClusterOfSequence
             name:
             {
                 let mut res = String::new();
+                res.push('-');
                 for elem in &elements {
-                    let foo = 
-                        match elem.name.chars().next() {
-                            Some(s) => s,
-                            None => 'n'
-                        };
-                    res.push(foo);
+                    // to avoid Err :
+                    if elem.name.len() <= 3 {
+                        res.push_str(&elem.name[0..elem.name.len()]);
+                    }else {
+                        res.push_str(&elem.name[0..3]);
+                    }
+                    res.push('-');
                 }
                 res
             },
@@ -158,9 +156,26 @@ impl ClusterOfSequence
         ClusterOfSequence {
             name:
             {
+                // we have to make sure there is no doublon
+                // to avoid conflict and wrong relation in foam
                 let mut foo= String::new();
-                foo.push_str(&clusters_1.name);
-                foo.push_str(&clusters_2.name);
+                foo.push('-');
+                for elem in &clusters_1.elements {
+                    if elem.name.len() <= 3 {
+                        foo.push_str(&elem.name[0..elem.name.len()]);
+                    }else {
+                        foo.push_str(&elem.name[0..3]);
+                    }
+                    foo.push('-');
+                }
+                for elem in &clusters_2.elements {
+                    if elem.name.len() <= 3 {
+                        foo.push_str(&elem.name[0..elem.name.len()]);
+                    }else {
+                        foo.push_str(&elem.name[0..3]);
+                    }
+                    foo.push('-');
+                }
                 foo
             },
             sub_clusters: vec![clusters_1.clone(), clusters_2.clone()],
@@ -335,6 +350,9 @@ impl ClusterOfSequence
         let name = self.clone().name;
         // change title
         foo = foo.replace("name", &name);
+
+        // println!("{}", name);
+
 
         // create docs folder if it did not exist
         fs::create_dir_all("./foam_rep/docs");

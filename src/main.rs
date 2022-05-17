@@ -2,7 +2,7 @@ mod sequence;
 mod utils;
 
 use sequence::*;
-use std::time::SystemTime;
+use std::{fs, time::SystemTime};
 // use utils::*;
 
 fn main() {
@@ -31,11 +31,11 @@ fn main() {
     // --Second Tests about Clusterize--
 
     // let sequences = vec![seq_1, seq_2, seq_3, seq_4, seq_5];
-    let seq_0_test = Sequence::new_with_string("seq_0_test".to_string(), "ATTACG".to_string());
-    let seq_1_test = Sequence::new_with_string("seq_1_test".to_string(), "ATATCG".to_string());
-    let seq_2_test = Sequence::new_with_string("seq_2_test".to_string(), "GCCGAG".to_string());
-    let seq_3_test = Sequence::new_with_string("seq_3_test".to_string(), "ACCCCG".to_string());
-    let seq_4_test = Sequence::new_with_string("seq_4_test".to_string(), "TCCCCG".to_string());
+    let seq_0_test = Sequence::new_with_string("ATTACG".to_string(), "ATTACG".to_string());
+    let seq_1_test = Sequence::new_with_string("ATATCG".to_string(), "ATATCG".to_string());
+    let seq_2_test = Sequence::new_with_string("GCCGAG".to_string(), "GCCGAG".to_string());
+    let seq_3_test = Sequence::new_with_string("ACCCCG".to_string(), "ACCCCG".to_string());
+    let seq_4_test = Sequence::new_with_string("TCCCCG".to_string(), "TCCCCG".to_string());
     let sequences_test = vec![seq_0_test, seq_1_test, seq_2_test, seq_3_test, seq_4_test];
     let mut bio_cluster = ClusterOfSequence::new_with_sequences(sequences_test);
     println!("bio_cluster: \n{}", bio_cluster.get_newick());
@@ -43,6 +43,9 @@ fn main() {
     bio_cluster.clusterize_agglomerative();
 
     println!("bio_cluster: \n{}", bio_cluster.get_newick());
+    // remove this line if you want to keep previous result
+    // but will conflict with new one
+    fs::remove_dir_all("./foam_rep/docs");
     bio_cluster.create_foam_rep();
     
 
@@ -55,6 +58,7 @@ fn main() {
     // start timer
     let st = SystemTime::now();
 
+
     hemo_cluster.create_foam_rep();
 
     // check timer
@@ -62,7 +66,7 @@ fn main() {
     println!("{:#?}", ed.duration_since(st).unwrap());
 
     // println!("bio_cluster clusterized: \n{}", hemo_cluster.get_newick_old());
-    // let seq_0_hemo = Sequence::new_with_string()
+    
 } 
 
 /*
@@ -80,3 +84,18 @@ fn main() {
  * 
  * Un bon Cluster : Un bon caféiné, "faites des pauses"
  */
+
+
+ /*
+ let foo = 
+        match "ATTGG".to_string().chars().next(){
+            Some(c) => c,
+            None => 'n'
+        };
+    let bar = 
+        match "".to_string().chars().next() {
+            Some(c) => c,
+            None => 'n'
+        };
+    println!("{} {}", foo, bar);
+*/
