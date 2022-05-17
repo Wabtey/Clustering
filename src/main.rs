@@ -2,6 +2,7 @@ mod sequence;
 mod utils;
 
 use sequence::*;
+use std::time::SystemTime;
 // use utils::*;
 
 fn main() {
@@ -38,15 +39,29 @@ fn main() {
     let sequences_test = vec![seq_0_test, seq_1_test, seq_2_test, seq_3_test, seq_4_test];
     let mut bio_cluster = ClusterOfSequence::new_with_sequences(sequences_test);
     println!("bio_cluster: \n{}", bio_cluster.get_newick());
+
     bio_cluster.clusterize_agglomerative();
+
     println!("bio_cluster: \n{}", bio_cluster.get_newick());
+    bio_cluster.create_foam_rep();
+    
 
     // --Third Tests about the automatisation of the fasta reading--
 
     let mut hemo_cluster = utils::analyze_from_ressource_folder();
     println!("bio_cluster: \n{}", hemo_cluster.get_newick_old());
     hemo_cluster.clusterize_agglomerative();
-    println!("bio_cluster clusterized: \n{}", hemo_cluster.get_newick_old());
+
+    // start timer
+    let st = SystemTime::now();
+
+    hemo_cluster.create_foam_rep();
+
+    // check timer
+    let ed = SystemTime::now();
+    println!("{:#?}", ed.duration_since(st).unwrap());
+
+    // println!("bio_cluster clusterized: \n{}", hemo_cluster.get_newick_old());
     // let seq_0_hemo = Sequence::new_with_string()
 } 
 

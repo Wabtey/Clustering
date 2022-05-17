@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use std::{vec::*, time::SystemTime,};
+use std::{vec::*, time::SystemTime, fs};
 
 #[derive(Clone)]
 pub struct Sequence {
@@ -101,6 +101,7 @@ impl Sequence {
  */
 #[derive(Clone)]
 pub struct ClusterOfSequence {
+    name: String,
     sub_clusters: Vec<ClusterOfSequence>,
     elements: Vec<Sequence>,
 }
@@ -110,6 +111,11 @@ impl ClusterOfSequence
     pub fn new(element: Sequence) -> ClusterOfSequence
     {
         ClusterOfSequence {
+            name:
+            match element.name.chars().next() {
+                Some(s) => s.to_string(),
+                None => "".to_string(),
+            },
             sub_clusters: Vec::new(),
             elements: vec![element],
         }
@@ -118,7 +124,21 @@ impl ClusterOfSequence
     pub fn new_with_sequences(elements:Vec<Sequence>) -> ClusterOfSequence
     {
         ClusterOfSequence {
-            sub_clusters: {
+            name:
+            {
+                let mut res = String::new();
+                for elem in &elements {
+                    let foo = 
+                        match elem.name.chars().next() {
+                            Some(s) => s,
+                            None => 'n'
+                        };
+                    res.push(foo);
+                }
+                res
+            },
+            sub_clusters:
+            {
                 let mut res = Vec::new();
                 for e in &elements {
                     res.push(ClusterOfSequence::new(e.clone()))
@@ -136,7 +156,15 @@ impl ClusterOfSequence
                         clusters_2: ClusterOfSequence) -> ClusterOfSequence
     {
         ClusterOfSequence {
+            name:
+            {
+                let mut foo= String::new();
+                foo.push_str(&clusters_1.name);
+                foo.push_str(&clusters_2.name);
+                foo
+            },
             sub_clusters: vec![clusters_1.clone(), clusters_2.clone()],
+
             // get all seq of clust_1 and clust_2 to elements
             elements: 
             {
@@ -224,6 +252,7 @@ impl ClusterOfSequence
                                          .as_str());
 
                 // e != self.elements.last().unwrap()
+                // TODO : check this if else usefulness
                 if i != self.sub_clusters.len()-1 {
                     res.push_str("\n");
                 }else {
@@ -250,6 +279,74 @@ impl ClusterOfSequence
         // res.push_str("\n");
         res
     }
+
+    /**
+     * create a serie of markdown file :
+     *  Each file contains 
+     *      - [[wikilinks]] to subclusters
+     *      - the list of elements contained
+     * Make sure you install foam vscode, and have theses folder :
+     *      - _layout
+     *      - .vscode
+     *      - .foam
+     *      - assets
+     * At the end, you will prompt the foam graph in vscode by :
+     * ctrl+p ">Foam: Show Graph"
+     */
+    pub fn create_foam_rep(&self) // -> Result<()>
+    {
+        
+        let mut foo =
+        "---
+        \ntitle: name
+        \n---
+        \n".to_string();
+
+        // Add up all sub_cluster links
+        for counter in 0..self.sub_clusters.len() {
+            let mut bar = "\n [[wikilink]]"
+                        .replace("wikilink", &self.sub_clusters[counter].clone().name);
+            
+            if counter != self.sub_clusters.len()-1 {
+                bar.push_str(", ");
+            }
+            foo.push_str(&bar);
+
+            // now create the md file associated with this sub cluster
+            self.sub_clusters[counter].create_foam_rep();
+        }
+
+        // separator
+        foo.push_str("\n");
+
+        // if you prefer have the sequence prompted
+        // change elment.name to element.seq
+        for element in &self.elements {
+            let mut bar = "element"
+                        .replace("element", &element.name);
+            if element.name != self.elements.last().unwrap().name {
+                bar.push_str(", ");
+            }
+            foo.push_str(&bar);
+        }
+
+        // write this foobar to a .md file
+
+        let name = self.clone().name;
+        // change title
+        foo = foo.replace("name", &name);
+
+        // create docs folder if it did not exist
+        fs::create_dir_all("./foam_rep/docs");
+        let path = "./foam_rep/docs/name.md".replace("name", &name);
+
+        fs::write(path, foo)
+                .expect("Unable to write file");
+            
+        // Ok(())
+
+    }
+
     /**
      * first approch :
      *  compare each sequence
