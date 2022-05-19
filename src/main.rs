@@ -46,7 +46,7 @@ fn main() {
     // remove this line if you want to keep previous result
     // but will conflict with new one
     fs::remove_dir_all("./foam_rep/docs");
-    bio_cluster.create_foam_rep();
+    bio_cluster.create_foam_rep("samples");
     
 
     // --Third Tests about the automatisation of the fasta reading--
@@ -59,7 +59,7 @@ fn main() {
     let st = SystemTime::now();
 
 
-    hemo_cluster.create_foam_rep();
+    hemo_cluster.create_foam_rep("hemo_samples");
 
     // check timer
     let ed = SystemTime::now();

@@ -308,12 +308,13 @@ impl ClusterOfSequence
      * At the end, you will prompt the foam graph in vscode by :
      * ctrl+p ">Foam: Show Graph"
      */
-    pub fn create_foam_rep(&self) // -> Result<()>
+    pub fn create_foam_rep(&self, folder_name: &str) // -> Result<()>
     {
         
         let mut foo =
         "---
         \ntitle: name
+        \ntype: bio_inf_results
         \n---
         \n".to_string();
 
@@ -328,7 +329,7 @@ impl ClusterOfSequence
             foo.push_str(&bar);
 
             // now create the md file associated with this sub cluster
-            self.sub_clusters[counter].create_foam_rep();
+            self.sub_clusters[counter].create_foam_rep(folder_name);
         }
 
         // separator
@@ -355,7 +356,10 @@ impl ClusterOfSequence
 
 
         // create docs folder if it did not exist
-        fs::create_dir_all("./foam_rep/docs");
+        let new_path =
+            "./foam_rep/docs/folder_name".to_string()
+                                         .replace("folder_name", folder_name);
+        fs::create_dir_all(&new_path);
         let path = "./foam_rep/docs/name.md".replace("name", &name);
 
         fs::write(path, foo)
