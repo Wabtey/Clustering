@@ -13,18 +13,31 @@ fn main() {
     let seq_2 = Sequence::new_with_string("seq_2".to_string(), "ATATCG".to_string());
     let seq_3 = Sequence::new_with_string("seq_3".to_string(), "ACCCCG".to_string());
     let seq_4 = Sequence::new_with_string("seq_4".to_string(), "GGGGAA".to_string());
-    let _seq_5 = Sequence::new_with_string("seq_5".to_string(), "TTTACG".to_string());
+    let seq_5 = Sequence::new_with_string("seq_5".to_string(), "TTTACG".to_string());
     let seq_6 = Sequence::new_with_string("seq_6".to_string(), "ATTAC".to_string());
     let seq_7 = Sequence::new_with_string("seq_7".to_string(), "ATATC".to_string());
 
-    println!("{}", seq_1.levenshtein_distance(&seq_1));
-    println!("{}", seq_1.levenshtein_distance(&seq_2));
-    println!("{}", seq_2.levenshtein_distance(&seq_1));
-    println!("{}", seq_6.levenshtein_distance(&seq_7));
-    println!("{}", seq_7.levenshtein_distance(&seq_6));
-    println!("{}", seq_1.levenshtein_distance(&seq_3));
-    println!("{}", seq_2.levenshtein_distance(&seq_3));
-    println!("{}", seq_1.levenshtein_distance(&seq_4));
+    let vec_seq = vec![seq_1, seq_2, seq_3, seq_4, seq_5, seq_6, seq_7];
+    let mut vec_res: Vec<Vec<usize>> = vec![vec![0;vec_seq.len()]; vec_seq.len()];
+    for i in 0..vec_seq.len() {
+        for j in 0..vec_seq.len() {
+            // println!("{} with {}: {}", vec_seq[i].get_name(),
+            //                            vec_seq[j].get_name(),
+            //                            vec_seq[i].levenshtein_distance(&vec_seq[j]));
+            vec_res[i][j] = vec_seq[i].levenshtein_distance(&vec_seq[j]);
+            print!("{} ", vec_res[i][j]);
+        }
+        println!("");
+    }
+
+    // println!("{}", seq_1.levenshtein_distance(&seq_1));
+    // println!("{}", seq_1.levenshtein_distance(&seq_2));
+    // println!("{}", seq_2.levenshtein_distance(&seq_1));
+    // println!("{}", seq_6.levenshtein_distance(&seq_7));
+    // println!("{}", seq_7.levenshtein_distance(&seq_6));
+    // println!("{}", seq_1.levenshtein_distance(&seq_3));
+    // println!("{}", seq_2.levenshtein_distance(&seq_3));
+    // println!("{}", seq_1.levenshtein_distance(&seq_4));
     
     // println!("name of ATTACG: {}", seq_1.get_name());
 
