@@ -49,6 +49,32 @@ fn main() {
     let seq_2_test = Sequence::new_with_string("GCCGAG".to_string(), "GCCGAG".to_string());
     let seq_3_test = Sequence::new_with_string("ACCCCG".to_string(), "ACCCCG".to_string());
     let seq_4_test = Sequence::new_with_string("TCCCCG".to_string(), "TCCCCG".to_string());
+    
+    let cl1 = ClusterOfSequence::new_with_sequences(vec![seq_0_test.clone(), seq_1_test.clone()]);
+    let cl2_bis = ClusterOfSequence::new_with_sequences(vec![seq_2_test.clone()]);
+    let cl3 = ClusterOfSequence::new_with_sequences(vec![seq_3_test.clone(), seq_4_test.clone()]);
+    let cl2 = ClusterOfSequence::new_with_clusters(cl2_bis, cl3.clone());
+
+    let whatever_this_is = vec![cl1, cl2, cl3];
+    let mut vec_res: Vec<Vec<f32>> = vec![vec![0.0;whatever_this_is.len()];
+                                            whatever_this_is.len()];
+
+    for i in 0..whatever_this_is.len() {
+        for j in 0..whatever_this_is.len() {
+            vec_res[i][j] = 
+                match whatever_this_is[i].linkage(whatever_this_is[j].clone()){
+                    Some(f) => f,
+                    None => {
+                        println!("ERROR");
+                        f32::MAX
+                    }
+                };
+            print!("v[{}][{}]: {} ", i, j, vec_res[i][j]);
+        }
+        println!("");
+    }
+    
+    
     let sequences_test = vec![seq_0_test, seq_1_test, seq_2_test, seq_3_test, seq_4_test];
     let mut bio_cluster = ClusterOfSequence::new_with_sequences(sequences_test);
     println!("bio_cluster: \n{}", bio_cluster.get_newick());
