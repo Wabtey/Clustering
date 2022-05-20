@@ -13,13 +13,13 @@ This way this feature `name` would only slow the method using it
 
 
 create_foam_rep() :
-First approch :
+First approach :
  - give a name to cluster directly into their structure when being created
  - When creating a cluster with only one sequence give the full sequence name to the cluster
  - When creating a cluster with a list of sequence, give the concat of all first letter of those sequence
  - When merging two cluster, give the concat of the two clusters' name
 
-Second approch :
+Second approach :
  - Cluster with one sequence : named by the sequence
  - Cluster with more : named with the three first letters of each sequence (separated by `-`)
  - Cluster of Cluster : named with sub_clusters' name separated with `_`
