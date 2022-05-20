@@ -356,13 +356,14 @@ impl ClusterOfSequence
 
 
         // create docs folder if it did not exist
-        let new_path =
-            "./foam_rep/docs/folder_name".to_string()
-                                         .replace("folder_name", folder_name);
-        fs::create_dir_all(&new_path);
-        let path = "./foam_rep/docs/name.md".replace("name", &name);
+        let folder_path = "./foam_rep/docs/folder_name/"
+                                .replace("folder_name", folder_name);
+        fs::create_dir_all(&folder_path);
+        let md_path = "./foam_rep/docs/folder_name/name.md"
+                                .replace("folder_name", folder_name)
+                                .replace("name", &name);
 
-        fs::write(path, foo)
+        fs::write(md_path, foo)
                 .expect("Unable to write file");
             
         // Ok(())
@@ -473,10 +474,6 @@ impl ClusterOfSequence
     pub fn clusterize_divisive(&self, _n: i32) {
 
     }
-}
-
-mod sequence_labeled{
-
 }
 
 mod lib {
